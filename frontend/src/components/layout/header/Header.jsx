@@ -87,7 +87,7 @@ export default function Header() {
                 </div>
               )}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end block md:hidden">
               <FontAwesomeIcon
                 icon={faBars}
                 size="lg"
@@ -102,7 +102,7 @@ export default function Header() {
       <AnimatePresence>
         {menu && (
           <motion.div
-            className="absolute px-4 py-4 z-30 h-[100vh] rounded-[5px] w-full bg-[#BCDAF2] bottom-0 left-0"
+            className="absolute  px-4 py-4 z-30 h-[100vh] rounded-[5px] w-full bg-[#BCDAF2] bottom-0 left-0"
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
