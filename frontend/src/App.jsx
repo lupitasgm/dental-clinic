@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import About from "./pages/About";
+import Services from "./pages/Services";
 import Error from "./components/error/Error";
 import useUserStore from "./stores/UserStore";
 import Http from "./requests/Http";
@@ -47,7 +48,7 @@ export default function App() {
           <Route path="/signup" element={<Register />} />
         </Route>
         <Route path="/about-us" element={<About />} />
-        {/* <Route path="/services" element={<Home />} /> */}
+        <Route path="/services" element={<Services />} />
       </Route>
     </Routes>
   );

@@ -4,7 +4,7 @@ import useUserStore from "../../../stores/UserStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const routes = [
   {
@@ -29,6 +29,7 @@ const session = [
 ];
 
 export default function Header() {
+
   const user = useUserStore((state) => state.user);
   const alterUser = useUserStore((state) => state.setUser);
   const [menu, setMenu] = useState();
@@ -45,6 +46,23 @@ export default function Header() {
     });
     setMenu(false);
   }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const navbar = document.querySelector("header");
+      if (window.scrollY > 1) {
+        navbar.classList.add("bg-sky-100"); 
+      } else {
+        navbar.classList.remove("bg-sky-100");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
 
   return (
     <>
@@ -87,7 +105,7 @@ export default function Header() {
                 </div>
               )}
             </div>
-            <div className="flex justify-end block md:hidden">
+            <div className="flex justify-end md:hidden">
               <FontAwesomeIcon
                 icon={faBars}
                 size="lg"
