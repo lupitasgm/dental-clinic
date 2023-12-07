@@ -4,7 +4,7 @@ import useUserStore from "../../../stores/UserStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const routes = [
   {
@@ -29,7 +29,6 @@ const session = [
 ];
 
 export default function Header() {
-
   const user = useUserStore((state) => state.user);
   const alterUser = useUserStore((state) => state.setUser);
   const [menu, setMenu] = useState();
@@ -51,7 +50,7 @@ export default function Header() {
     const handleScroll = () => {
       const navbar = document.querySelector("header");
       if (window.scrollY > 1) {
-        navbar.classList.add("bg-sky-100"); 
+        navbar.classList.add("bg-sky-100");
       } else {
         navbar.classList.remove("bg-sky-100");
       }
@@ -63,11 +62,10 @@ export default function Header() {
     };
   }, []);
 
-
   return (
     <>
-      <header className="fixed top-0 w-full z-20 px-4">
-        <div className="max-w-[1300px] mx-auto py-4 border-b">
+      <header className="fixed top-0 w-full z-20 px-4 transition-colors duration-200">
+        <div className="container mx-auto py-4 border-b">
           <div className="grid grid-cols-2 items-center md:grid-cols-3 font-bold">
             <div className="flex">
               <Link to="/" className="cursor-pointer">
@@ -97,12 +95,17 @@ export default function Header() {
                   </Link>
                 ))}
               {user && (
-                <div
-                  className="hover:underline transition-all  cursor-pointer"
-                  onClick={logout}
-                >
-                  Cerrar sesión
-                </div>
+                <>
+                  <Link to={"/agendar"} className="text-blue-500">
+                    Agendar cita
+                  </Link>
+                  <div
+                    className="hover:underline transition-all  cursor-pointer"
+                    onClick={logout}
+                  >
+                    Cerrar sesión
+                  </div>
+                </>
               )}
             </div>
             <div className="flex justify-end md:hidden">
@@ -165,12 +168,17 @@ export default function Header() {
                   </Link>
                 ))}
               {user && (
-                <div
-                  className="hover:underline transition-all cursor-pointer"
-                  onClick={logout}
-                >
-                  Cerrar sesión
-                </div>
+                <>
+                  <Link to="/agender" className="text-blue-500">
+                    Agendar cita
+                  </Link>
+                  <div
+                    className="hover:underline transition-all cursor-pointer"
+                    onClick={logout}
+                  >
+                    Cerrar sesión
+                  </div>
+                </>
               )}
             </div>
             <div className="z-10 h-[150px] w-[150px] border-8 border-white/70 rounded-full absolute top-[-75px]"></div>

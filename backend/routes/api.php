@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\UserController;
+use App\Models\Doctor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,3 +27,5 @@ Route::post('/logout', [UserController::class, 'logout'])->name('user.logout')->
 Route::get('/me', function() {
     return auth()->user();
 })->middleware('auth:sanctum');
+
+Route::resource('doctors', DoctorController::class);
