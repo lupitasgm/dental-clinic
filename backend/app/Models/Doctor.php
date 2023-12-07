@@ -22,6 +22,7 @@ class Doctor extends Model
 
 
     public function appointments(): BelongsToMany {
-       return $this->belongsToMany(User::class, 'doctor_appointments', 'doctor_id', 'user_id');
+       return $this->belongsToMany(User::class, 'doctor_appointments', 'doctor_id', 'user_id')
+       ->withPivot('schedule');
     }   
 }

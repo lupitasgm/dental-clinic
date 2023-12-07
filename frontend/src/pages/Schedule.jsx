@@ -1,26 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useDoctorInformation from "../hooks/useDoctorInformation";
 import DoctorCard from "../components/doctor/DoctorCard";
 import useUserStore from "../stores/UserStore";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../assets/css/datePicker.css";
-import { addDays, getDay } from "date-fns";
+import { addDays, differenceInDays, getDay, getHours } from "date-fns";
 
 const hours = [
-  "8:00am - 9:00am",
-  "9:00am - 10:00am",
-  "10:00am - 11:00am",
-  "11:00am - 12:00am",
-  "1:00pm - 2:00pm",
-  "2:00pm - 3:00pm",
-  "3:00pm - 4:00pm",
-  "4:00pm - 5:00pm",
+  [8, 9],
+  [9, 10],
+  [10, 11],
+  [11, 12],
+  [13, 14],
+  [14, 15],
+  [15, 16],
+  [16, 17],
 ];
 
 export default function Schedule() {
   const [selectedDoctor, setSelectedDoctor] = useState();
   const [startDate, setStartDate] = useState(addDays(new Date(), 1));
+  const [busy, setBusy] = useState([]);
   const { doctors } = useDoctorInformation(setSelectedDoctor);
   const user = useUserStore((state) => state.user);
 
@@ -29,6 +30,24 @@ export default function Schedule() {
     return day !== 0 && day !== 6;
   };
 
+  useEffect(() => {
+    setBusy([]);
+    if (!selectedDoctor || !startDate) return;
+    selectedDoctor.appointments.map((appointment) => {
+      if (differenceInDays(new Date(appointment.pivot.schedule), startDate) != 0) return;
+      let searchHour = getHours(new Date(appointment.pivot.schedule));
+      if (searchHour > 16 && searchHour < 8) return;
+      for (let i = 0; i < hours.length; i++) {
+        const [leftHour] = hours[i];
+        if (searchHour !== leftHour) return;
+        const isBusy = [...busy];
+        isBusy.push(i);
+        return setBusy(isBusy);
+      }
+    });
+  }, [startDate, selectedDoctor]);
+
+  console.log(busy);
   return (
     <section className="min-h-screen bg-white font-bold flex items-center">
       <div className="container mx-auto py-18 flex flex-col">
@@ -61,7 +80,7 @@ export default function Schedule() {
                   onChange={(date) => setStartDate(date)}
                   dateFormat="MMMM d, yyyy"
                   filterDate={isWeekday}
-                  minDate={addDays(new Date(), 1)}
+                  // minDate={addDays(new Date(), 1)}
                   className="w-full border-none outline-none py-2 text-blue-950"
                 />
               </div>
@@ -69,9 +88,13 @@ export default function Schedule() {
               {hours.map((hour, idx) => (
                 <div
                   key={idx}
-                  className={`border border-blue-500 rounded-full px-4 py-6 mx-4 my-2 cursor-pointer hover:bg-blue-500 text-blue-500 hover:text-white transition-all`}
+                  className={`${
+                    busy.includes(idx)
+                      ? "bg-blue-950 text-white border-blue-950 hover:bg-blue-950 hover:text-white cursor-auto"
+                      : ""
+                  } border border-blue-500 rounded-full px-4 py-6 mx-4 my-2 cursor-pointer hover:bg-blue-500 text-blue-500 hover:text-white transition-all`}
                 >
-                  {hour}
+                  {hour[0]}:00 - {hour[1]}:00
                 </div>
               ))}
             </div>
