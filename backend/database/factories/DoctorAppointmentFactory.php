@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Doctor;
+use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,6 +23,7 @@ class DoctorAppointmentFactory extends Factory
             'user_id' => User::factory()->createOne()->id,
             'doctor_id' => Doctor::factory()->createOne()->id,
             'schedule' => fake()->dateTimeThisMonth(),
+            'skill_id' => Skill::factory()->createOne()->id,
         ];
     }
 }

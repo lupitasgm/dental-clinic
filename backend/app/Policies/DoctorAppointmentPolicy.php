@@ -21,7 +21,6 @@ class DoctorAppointmentPolicy
      */
     public function view(User $user, DoctorAppointment $doctorAppointment): bool
     {
-        //
     }
 
     /**
@@ -29,7 +28,8 @@ class DoctorAppointmentPolicy
      */
     public function create(User $user): bool
     {
-        //
+        dd($user);
+        return !is_null($user);
     }
 
     /**

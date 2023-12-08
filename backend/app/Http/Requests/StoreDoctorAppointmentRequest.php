@@ -11,7 +11,7 @@ class StoreDoctorAppointmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class StoreDoctorAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => 'required',
+            'doctor_id' => 'required',
+            'schedule' => 'required',
+            'skill_id' => 'required',
         ];
     }
 }

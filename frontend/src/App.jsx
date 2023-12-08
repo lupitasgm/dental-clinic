@@ -9,6 +9,7 @@ import Error from "./components/error/Error";
 import useUserStore from "./stores/UserStore";
 import Http from "./requests/Http";
 import Schedule from "./pages/Schedule";
+import Dashboard from "./pages/Dashboard";
 
 // eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({ isAllowed, redirectPath = "/landing", children }) => {
@@ -55,6 +56,12 @@ export default function App() {
           element={<ProtectedRoute redirectPath="/" isAllowed={user} />}
         >
           <Route path="/agendar" element={<Schedule />} />
+        </Route>
+        <Route
+          path="/dashboard"
+          element={<ProtectedRoute redirectPath="/" isAllowed={user} />}
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>
     </Routes>

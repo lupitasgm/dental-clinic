@@ -71,6 +71,11 @@ export default function Header() {
               <Link to="/" className="cursor-pointer">
                 <span className="text-blue-500 font-extrabold">D</span>Alvarado
               </Link>
+              <Link to="/dashboard" className="hidden md:block">
+                <span className="text-blue-500 ml-4 font-extrabold">
+                  Mis citas
+                </span>
+              </Link>
             </div>
             <div className="md:flex gap-5 justify-center hidden">
               {routes.map((route, idx) => (
@@ -169,6 +174,9 @@ export default function Header() {
                 ))}
               {user && (
                 <>
+                  <Link to="/dashboard">
+                    <span className="text-blue-500">Mis citas</span>
+                  </Link>
                   <Link to="/agender" className="text-blue-500">
                     Agendar cita
                   </Link>

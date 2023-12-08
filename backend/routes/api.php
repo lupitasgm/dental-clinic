@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\DoctorAppointmentController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\UserController;
-use App\Models\Doctor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,3 +29,4 @@ Route::get('/me', function() {
 })->middleware('auth:sanctum');
 
 Route::resource('doctors', DoctorController::class);
+Route::resource('appointments', DoctorAppointmentController::class)->middleware('auth:sanctum');

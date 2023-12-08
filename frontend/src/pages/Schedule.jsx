@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../assets/css/datePicker.css";
 import { addDays, differenceInDays, getDay, getHours } from "date-fns";
+import Appointments from "../requests/Appointments";
 
 const hours = [
   [8, 9],
@@ -22,6 +23,8 @@ export default function Schedule() {
   const [selectedDoctor, setSelectedDoctor] = useState();
   const [startDate, setStartDate] = useState(addDays(new Date(), 1));
   const [busy, setBusy] = useState([]);
+  const [hourSelected, setHourSelected] = useState();
+  const [skill, setSkill] = useState();
   const { doctors } = useDoctorInformation(setSelectedDoctor);
   const user = useUserStore((state) => state.user);
 
@@ -34,20 +37,47 @@ export default function Schedule() {
     setBusy([]);
     if (!selectedDoctor || !startDate) return;
     selectedDoctor.appointments.map((appointment) => {
-      if (differenceInDays(new Date(appointment.pivot.schedule), startDate) != 0) return;
+      if (
+        differenceInDays(new Date(appointment.pivot.schedule), startDate) != 0
+      )
+        return;
       let searchHour = getHours(new Date(appointment.pivot.schedule));
+      console.log(searchHour);
       if (searchHour > 16 && searchHour < 8) return;
       for (let i = 0; i < hours.length; i++) {
         const [leftHour] = hours[i];
-        if (searchHour !== leftHour) return;
-        const isBusy = [...busy];
-        isBusy.push(i);
-        return setBusy(isBusy);
+        if (searchHour == leftHour) {
+          const isBusy = [...busy];
+          isBusy.push(i);
+          return setBusy(isBusy);
+        }
       }
     });
   }, [startDate, selectedDoctor]);
 
-  console.log(busy);
+  function scheduleDate() {
+    const newDate = new Date(startDate);
+    newDate.setHours(hourSelected[0], 0, 0, 0);
+    const timezoneOffset = newDate.getTimezoneOffset();
+    newDate.setMinutes(newDate.getMinutes() - timezoneOffset);
+    const formattedDate = newDate.toISOString().slice(0, 19).replace("T", " ");
+
+    Appointments.create({
+      doctor_id: selectedDoctor.id,
+      user_id: user.user.id,
+      schedule: formattedDate,
+      skill_id: Number(skill),
+    })
+      .then(() => {
+        const isBusy = [...busy];
+        isBusy.push(hours.indexOf(hourSelected));
+        setBusy(isBusy);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return (
     <section className="min-h-screen bg-white font-bold flex items-center">
       <div className="container mx-auto py-18 flex flex-col">
@@ -65,12 +95,17 @@ export default function Schedule() {
           <div className="col-span-4 ml-4 mt-2">
             <div className="grid grid-cols-2 gap-4">
               <div className="border border-blue-950 rounded-full px-4 mx-4">
-                <select className="w-full text-blue-950 border-none outline-none bg-transparent py-4 rounded-full ">
+                <select
+                  onChange={(e) => setSkill(e.target.value)}
+                  className="w-full text-blue-950 border-none outline-none bg-transparent py-4 rounded-full "
+                >
                   <option disabled selected>
                     Selecciona un procedimiento
                   </option>
                   {selectedDoctor?.skills?.map((skill, idx) => (
-                    <option key={idx}>{skill?.specialization}</option>
+                    <option key={idx} value={skill.id}>
+                      {skill?.specialization}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -80,7 +115,7 @@ export default function Schedule() {
                   onChange={(date) => setStartDate(date)}
                   dateFormat="MMMM d, yyyy"
                   filterDate={isWeekday}
-                  // minDate={addDays(new Date(), 1)}
+                  minDate={addDays(new Date(), 1)}
                   className="w-full border-none outline-none py-2 text-blue-950"
                 />
               </div>
@@ -88,15 +123,24 @@ export default function Schedule() {
               {hours.map((hour, idx) => (
                 <div
                   key={idx}
+                  onClick={() => setHourSelected(hour)}
                   className={`${
                     busy.includes(idx)
                       ? "bg-blue-950 text-white border-blue-950 hover:bg-blue-950 hover:text-white cursor-auto"
                       : ""
-                  } border border-blue-500 rounded-full px-4 py-6 mx-4 my-2 cursor-pointer hover:bg-blue-500 text-blue-500 hover:text-white transition-all`}
+                  } 
+                  ${hourSelected === hour ? "bg-blue-500 text-white" : ""}
+                  border border-blue-500 rounded-full px-4 py-6 mx-4 my-2 cursor-pointer hover:bg-blue-500 text-blue-500 hover:text-white transition-all`}
                 >
                   {hour[0]}:00 - {hour[1]}:00
                 </div>
               ))}
+              <button
+                className="mx-4 bg-blue-500 hover:bg-blue-950 transition-all duration-300 text-white py-4 col-span-2 rounded-full"
+                onClick={scheduleDate}
+              >
+                Agendar cita
+              </button>
             </div>
           </div>
         </div>
